@@ -45,13 +45,13 @@ def save_comic_to_album(url, access_token, version,
 
 
 def publish_image(access_token, version, group_id,
-                  save_details, author_comment):
+                  owner_id, media_id, author_comment):
     publish_params = {
         'access_token': access_token,
         'v': version,
         'owner_id': (-1) * group_id,
         'from_group': 1,
-        'attachments': f"photo{save_details['owner_id']}_{save_details['id']}",
+        'attachments': f"photo{owner_id}_{media_id}",
         'message': author_comment
     }
     publish_url = 'https://api.vk.com/method/wall.post'
@@ -120,7 +120,8 @@ if __name__ == '__main__':
             access_token,
             version,
             group_id,
-            save_details,
+            save_details['owner_id'],
+            save_details['id'],
             comic_details['author_comment']
         )
     finally:
