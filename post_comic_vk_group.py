@@ -1,4 +1,3 @@
-import os
 import random
 import shutil
 from pathlib import Path
@@ -14,7 +13,8 @@ def get_server_url(access_token, version, group_id):
     params = {'access_token': access_token, 'v': version, 'group_id': group_id}
     vk_response = requests.get(vk_url, params=params)
     vk_response.raise_for_status()
-    upload_url = vk_response.json()['response']['upload_url']
+    vk_response_details = check_vk_response(vk_response)
+    upload_url = vk_response_details['response']['upload_url']
 
     return upload_url
 
@@ -27,7 +27,7 @@ def save_comic_to_album(url, access_token, version,
         }
         response = requests.post(url, files=files)
     response.raise_for_status()
-    response_details = response.json()
+    response_details = check_vk_response(response)
     save_params = {
         'access_token': access_token,
         'hash': response_details['hash'],
@@ -39,7 +39,8 @@ def save_comic_to_album(url, access_token, version,
     save_url = 'https://api.vk.com/method/photos.saveWallPhoto'
     save_response = requests.post(save_url, params=save_params)
     save_response.raise_for_status()
-    save_details = save_response.json()['response'][0]
+    save_response_details = check_vk_response(save_response)
+    save_details = save_response_details['response'][0]
 
     return save_details
 
@@ -57,13 +58,16 @@ def publish_image(access_token, version, group_id,
     publish_url = 'https://api.vk.com/method/wall.post'
     publish_response = requests.post(publish_url, params=publish_params)
     publish_response.raise_for_status()
+    check_vk_response(publish_response)
+
 
 
 def get_last_comic_num():
     url = 'https://xkcd.com/info.0.json'
     response = requests.get(url)
     response.raise_for_status()
-    end_num = response.json()['num']
+    response_details =check_vk_response(response)
+    end_num = response_details['num']
 
     return end_num
 
@@ -73,7 +77,7 @@ def get_random_comic(end_num):
     url = f'https://xkcd.com/{comic_num}/info.0.json'
     response = requests.get(url)
     response.raise_for_status()
-    response_json = response.json()
+    response_json = check_vk_response(response)
     comic_details = {
         'image_url': response_json['img'],
         'author_comment': response_json['alt'],
@@ -81,6 +85,14 @@ def get_random_comic(end_num):
     }
 
     return comic_details
+
+
+def check_vk_response(response):
+    vk_response_details = response.json()
+    if 'error' in vk_response_details:
+        raise requests.HTTPError(vk_response_details['error'])
+    else:
+        return vk_response_details
 
 
 if __name__ == '__main__':
