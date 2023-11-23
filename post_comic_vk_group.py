@@ -1,5 +1,6 @@
 import os
 import random
+import shutil
 from pathlib import Path
 
 import requests
@@ -89,38 +90,38 @@ if __name__ == '__main__':
     version = 5.154
     group_id = env.int('GROUP_ID')
     Path('files').mkdir(exist_ok=True)
+    try:
+        end_num = get_last_comic_num()
+        comic_details = get_random_comic(end_num)
+        comic_dir = Path('files').joinpath(f"image{comic_details['comic_num']}")
 
-    end_num = get_last_comic_num()
-    comic_details = get_random_comic(end_num)
-    comic_dir = Path('files').joinpath(f"image{comic_details['comic_num']}")
+        download_image(
+            comic_details['image_url'],
+            comic_dir
+        )
+        file_extension = fetch_file_extension(comic_details['image_url'])
+        
+        upload_url = get_server_url(
+            access_token,
+            version,
+            group_id
+        )
 
-    download_image(
-        comic_details['image_url'],
-        comic_dir
-    )
-    file_extension = fetch_file_extension(comic_details['image_url'])
+        save_details = save_comic_to_album(
+            upload_url,
+            access_token,
+            version,
+            group_id,
+            comic_dir,
+            file_extension
+        )
 
-    upload_url = get_server_url(
-        access_token,
-        version,
-        group_id
-    )
-
-    save_details = save_comic_to_album(
-        upload_url,
-        access_token,
-        version,
-        group_id,
-        comic_dir,
-        file_extension
-    )
-
-    publish_image(
-        access_token,
-        version,
-        group_id,
-        save_details,
-        comic_details['author_comment']
-    )
-
-    os.remove(f"{comic_dir}{file_extension}")
+        publish_image(
+            access_token,
+            version,
+            group_id,
+            save_details,
+            comic_details['author_comment']
+        )
+    finally:
+        shutil.rmtree('files')
