@@ -1,5 +1,6 @@
 import os
 import random
+from pathlib import Path
 
 import requests
 from environs import Env
@@ -18,8 +19,8 @@ def get_server_url(access_token, version, group_id):
 
 
 def save_comic_to_album(url, access_token, version,
-                        group_id, comic_num, extension):
-    with open(f"files/image{comic_num}{extension}", 'rb') as file:
+                        group_id, comic_dir, extension):
+    with open(f"{comic_dir}{extension}", 'rb') as file:
         files = {
             'photo': file,
         }
@@ -86,15 +87,16 @@ if __name__ == '__main__':
     env.read_env()
     access_token = env.str('VK_APP_TOKEN')
     version = 5.154
-    group_id = env.str('GROUP_ID')
-    os.makedirs('files', exist_ok=True)
+    group_id = env.int('GROUP_ID')
+    Path('files').mkdir(exist_ok=True)
 
     end_num = get_last_comic_num()
     comic_details = get_random_comic(end_num)
+    comic_dir = Path('files').joinpath(f"image{comic_details['comic_num']}")
 
     download_image(
         comic_details['image_url'],
-        f"files/image{comic_details['comic_num']}"
+        comic_dir
     )
     file_extension = fetch_file_extension(comic_details['image_url'])
 
@@ -109,7 +111,7 @@ if __name__ == '__main__':
         access_token,
         version,
         group_id,
-        comic_details['comic_num'],
+        comic_dir,
         file_extension
     )
 
@@ -121,4 +123,4 @@ if __name__ == '__main__':
         comic_details['author_comment']
     )
 
-    os.remove(f"files/image{comic_details['comic_num']}{file_extension}")
+    os.remove(f"{comic_dir}{file_extension}")
