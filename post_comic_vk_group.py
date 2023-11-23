@@ -86,7 +86,7 @@ if __name__ == '__main__':
     env.read_env()
     access_token = env.str('VK_APP_TOKEN')
     version = 5.154
-    group_id = 223543057
+    group_id = env.str('GROUP_ID')
     os.makedirs('files', exist_ok=True)
 
     end_num = get_last_comic_num()
