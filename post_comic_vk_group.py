@@ -74,9 +74,10 @@ def get_random_comic(end_num):
     url = f'https://xkcd.com/{comic_num}/info.0.json'
     response = requests.get(url)
     response.raise_for_status()
+    response_json = response.json()
     comic_details = {
-        'image_url': response.json()['img'],
-        'author_comment': response.json()['alt'],
+        'image_url': response_json['img'],
+        'author_comment': response_json['alt'],
         'comic_num': comic_num
     }
 
@@ -100,7 +101,7 @@ if __name__ == '__main__':
             comic_dir
         )
         file_extension = fetch_file_extension(comic_details['image_url'])
-        
+
         upload_url = get_server_url(
             access_token,
             version,
