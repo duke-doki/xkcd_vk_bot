@@ -49,7 +49,7 @@ def publish_image(access_token, version, group_id,
     publish_params = {
         'access_token': access_token,
         'v': version,
-        'owner_id': (-1) * group_id,
+        'owner_id': -group_id,
         'from_group': 1,
         'attachments': f"photo{owner_id}_{media_id}",
         'message': author_comment
