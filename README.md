@@ -16,6 +16,7 @@ pip install -r requirements.txt
 ### Environment variables
 
 - VK_APP_TOKEN
+- GROUP_ID
 
 1. Put `.env` file near `main.py`.
 2. `.env` contains text data without quotes.
@@ -25,6 +26,7 @@ For example, if you print `.env` content, you will see:
 ```bash
 $ cat .env
 VK_APP_TOKEN=vk1.a.VGIbB6RUQ...
+GROUP_ID=223543057
 ```
 
 #### How to get
@@ -33,12 +35,12 @@ Create a VK group with permissions to general info,
 photo, wall, groups and access at any time. 
 
 Create standalone app [here](https://vk.com/dev),
-then find your `client_id` in the app info, and get your `access_token` [here](https://vk.com/dev/implicit_flow_user)
+then find your `client_id` and `group_id` in the app info, and get your `access_token` [here](https://vk.com/dev/implicit_flow_user)
 as `VK_APP_TOKEN`.
 
 ### How to install
 
-Set your `version`, `group_id` and `access_token` in `post_comic_vk_group.py`
+Set your `version` in `post_comic_vk_group.py`.
 
 ### Run
 
