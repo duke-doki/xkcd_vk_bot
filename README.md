@@ -38,9 +38,6 @@ Create standalone app [here](https://vk.com/dev),
 then find your `client_id` and `group_id` in the app info, and get your `access_token` [here](https://vk.com/dev/implicit_flow_user)
 as `VK_APP_TOKEN`.
 
-### How to install
-
-Set your `version` in `post_comic_vk_group.py`.
 
 ### Run
 
