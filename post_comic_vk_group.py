@@ -26,23 +26,22 @@ def save_comic_to_album(url, access_token, version,
             'photo': file,
         }
         response = requests.post(url, files=files)
-        response.raise_for_status()
-        response_details = response.json()
+    response.raise_for_status()
+    response_details = response.json()
+    save_params = {
+        'access_token': access_token,
+        'hash': response_details['hash'],
+        'photo': response_details['photo'],
+        'server': response_details['server'],
+        'v': version,
+        'group_id': group_id
+    }
+    save_url = 'https://api.vk.com/method/photos.saveWallPhoto'
+    save_response = requests.post(save_url, params=save_params)
+    save_response.raise_for_status()
+    save_details = save_response.json()['response'][0]
 
-        save_params = {
-            'access_token': access_token,
-            'hash': response_details['hash'],
-            'photo': response_details['photo'],
-            'server': response_details['server'],
-            'v': version,
-            'group_id': group_id
-        }
-        save_url = 'https://api.vk.com/method/photos.saveWallPhoto'
-        save_response = requests.post(save_url, params=save_params)
-        save_response.raise_for_status()
-        save_details = save_response.json()['response'][0]
-
-        return save_details
+    return save_details
 
 
 def publish_image(access_token, version, group_id,
