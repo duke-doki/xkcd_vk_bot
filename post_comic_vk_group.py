@@ -66,8 +66,7 @@ def get_last_comic_num():
     url = 'https://xkcd.com/info.0.json'
     response = requests.get(url)
     response.raise_for_status()
-    response_details =check_vk_response(response)
-    end_num = response_details['num']
+    end_num = response.json()['num']
 
     return end_num
 
@@ -77,7 +76,7 @@ def get_random_comic(end_num):
     url = f'https://xkcd.com/{comic_num}/info.0.json'
     response = requests.get(url)
     response.raise_for_status()
-    response_json = check_vk_response(response)
+    response_json = response.json()
     comic_details = {
         'image_url': response_json['img'],
         'author_comment': response_json['alt'],
